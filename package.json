@@ -1,0 +1,12 @@
+{  
+  "name": "hydro-bulk-message",  
+  "version": "1.0.0",  
+  "description": "A plugin for sending messages in bulk on HydroOJ",  
+  "main": "index.ts",  
+  "author": "Hongshi",  
+  "license": "APGL-3.0",  
+  "dependencies": {},  
+  "peerDependencies": {  
+    "hydrooj": "*"  
+  }  
+}
