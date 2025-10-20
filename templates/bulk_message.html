@@ -1,0 +1,56 @@
+{% extends "layout/basic.html" %}  
+{% block content %}  
+<div class="row">  
+  <div class="medium-9 columns">  
+    <div class="section">  
+      <div class="section__header">  
+        <h1 class="section__title">{{ _('bulk_message_title') }}</h1>  
+      </div>  
+      <div class="section__body">  
+        <form method="post">  
+          <div class="row">  
+            <div class="columns">  
+              <label>  
+                {{ _('bulk_message_uids') }}  
+                <input   
+                  name="uids"   
+                  type="text"   
+                  class="textbox"   
+                  autocomplete="off"  
+                  required  
+                >  
+              </label>  
+            </div>  
+          </div>  
+            
+          <div class="row">  
+            <div class="columns">  
+              <label>  
+                {{ _('bulk_message_content') }}  
+                <textarea   
+                  name="content"   
+                  class="textbox"   
+                  rows="10"  
+                  required  
+                ></textarea>  
+              </label>  
+            </div>  
+          </div>  
+            
+          <div class="row">  
+            <div class="columns">  
+              <input type="hidden" name="csrf_token" value="{{ handler.csrfToken }}">  
+              <button type="submit" class="button rounded primary">  
+                {{ _('bulk_message_send') }}  
+              </button>  
+              <a href="{{ url('home_messages') }}" class="button rounded">  
+                {{ _('Cancel') }}  
+              </a>  
+            </div>  
+          </div>  
+        </form>  
+      </div>  
+    </div>  
+  </div>  
+</div>  
+{% endblock %}
