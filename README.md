@@ -8,7 +8,16 @@
 
 ## 2 添加插件
 我们一般建议将文件夹解压后放在`/root/.hydro/addons`目录中。  
-使用`hydrooj addon add /root/.hydro/addons`后`pm2 restart hydrooj`来添加插件。  
+你应当创建一个名为`hydro-bulk-message`的文件夹在当前目录中，再将`hydro-bulk-message.zip`放入并解压到当前文件夹。  
+请检查文件夹结构是否正确，正确的结构为：
+```
+hydro-bulk-message/
+├── package.json
+├── index.ts
+└── templates/
+    └── bulk_message.html
+```
+使用`hydrooj addon add /root/.hydro/addons/hydro-bulk-message`后`pm2 restart hydrooj`来添加插件。  
 
 ## 3 使用
 拥有对应权限的用户可以在头像下方下拉菜单中找到`批量消息`按钮。  
