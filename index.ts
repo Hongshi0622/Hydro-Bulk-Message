@@ -1,4 +1,4 @@
-import { Context, Handler, MessageModel, param, PRIV, Types } from 'hydrooj';  
+import { Context, Handler, MessageModel, UserModel, param, PRIV, Types } from 'hydrooj';  
   
 class BulkMessageHandler extends Handler {  
     async get() {  
@@ -9,31 +9,43 @@ class BulkMessageHandler extends Handler {
         };  
     }  
   
-    @param('uids', Types.CommaSeperatedArray)  
-    @param('content', Types.Content)  
-    async post(domainId: string, uids: string[], content: string) {  
-        this.checkPriv(PRIV.PRIV_SEND_MESSAGE);  
-          
-        // uids 已经是字符串数组，直接转换为数字数组  
-        const uidArray = uids  
-            .map(uid => parseInt(uid.trim(), 10))  
-            .filter(uid => !Number.isNaN(uid));  
-          
-        if (uidArray.length === 0) {  
-            throw new Error('Please enter valid user UIDs');  
-        }  
-          
-        // 使用MessageModel批量发送消息  
-        await MessageModel.send(  
-            this.user._id,  
-            uidArray,  
-            content,  
-            MessageModel.FLAG_UNREAD  
-        );  
-          
-        this.back();  
-    }  
-}  
+    @param('recipients', Types.CommaSeperatedArray)
+    @param('content', Types.Content)
+    async post(domainId: string, recipients: string[], content: string) {
+        this.checkPriv(PRIV.PRIV_SEND_MESSAGE);
+
+        const uids = new Set<number>();
+        const groups = await UserModel.listGroup(domainId);
+
+        for (const recipient of recipients) {
+          const trimmed = recipient.trim();
+          if (!trimmed) continue;
+
+          const group = groups.find((g) => g.name === trimmed);
+          if (group) {
+              for (const uid of group.uids) uids.add(uid);
+          } else {
+              const uid = parseInt(trimmed, 10);
+              if (!Number.isNaN(uid)){
+                  const udoc = await UserModel.getById(domainId, uid);
+                  if (udoc) uids.add(uid);
+              }
+          }
+        }
+
+        if (!uids.size)
+            throw new ValidationError('recipients');
+
+        await MessageModel.send(
+            this.user._id,
+            Array.from(uids),
+            content,
+            MessageModel.FLAG_UNREAD
+        );
+        this.back();
+        this.response.body = { success: true };
+    }
+} 
   
 export function apply(ctx: Context) {  
     // 注册路由  
